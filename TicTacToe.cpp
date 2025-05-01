@@ -1,3 +1,4 @@
+#include <utility>
 #include "TicTacToe.h"
 
 void DrawBoard(char board[3][3])
@@ -32,4 +33,9 @@ void DrawBoard(char board[3][3])
 		}
 		
 	}
+}
+
+std::pair<int, int> ReadInput(int row, int column)
+{
+	return std::pair(row / 200, column / 200);
 }

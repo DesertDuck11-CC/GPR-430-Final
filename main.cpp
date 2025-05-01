@@ -10,6 +10,8 @@ const std::string SERVER_ADDRESS = "127.0.0.1";
 
 char board[3][3] = { {' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '} };
 
+bool isMyTurn;
+
 void InitServer();
 void InitClient();
 
@@ -27,10 +29,12 @@ int main(int argc, char* argv[])
 
 		if (input == "s")
 		{
+			isMyTurn = true;
 			InitServer();
 		}
 		else if (input == "c")
 		{
+			isMyTurn = false;
 			InitClient();
 		}
 		else
@@ -66,6 +70,13 @@ void InitServer()
 		ClearBackground(WHITE);
 		
 		DrawBoard(board);
+		
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMyTurn)
+		{
+			std::pair<int, int> input = ReadInput(GetMouseX(), GetMouseY());
+			board[input.first][input.second] = 'x';
+			isMyTurn = !isMyTurn;
+		}
 
 		DrawFPS(20, 20);
 		EndDrawing();
@@ -112,6 +123,12 @@ void InitClient()
 		ClearBackground(WHITE);
 
 		DrawBoard(board);
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMyTurn)
+		{
+			std::pair<int, int> input = ReadInput(GetMouseX(), GetMouseY());
+			board[input.first][input.second] = 'o';
+			isMyTurn = !isMyTurn;
+		}
 
 		DrawFPS(20, 20);
 		EndDrawing();
