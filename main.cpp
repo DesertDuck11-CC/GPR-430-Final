@@ -135,6 +135,23 @@ void InitClient()
 				isMyTurn = !isMyTurn;
 			}
 				
+			client.Send((char*)&input.first, sizeof(input.first));
+			client.Send((char*)&input.second, sizeof(input.second));
+		}
+
+		char buffer[sizeof(int) * 2];
+		int recvBytes = client.Recv(buffer, sizeof(buffer));
+
+		if (recvBytes > 0)
+		{
+			int recvX = *(int*)(buffer);
+			int recvY = *(int*)(buffer + sizeof(int));
+
+			if (board[recvX][recvY] == ' ')
+			{
+				board[recvX][recvY] = 'x';
+				isMyTurn = !isMyTurn;
+			}
 		}
 
 		DrawFPS(20, 20);
