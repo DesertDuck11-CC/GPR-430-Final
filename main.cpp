@@ -72,6 +72,45 @@ void InitServer()
 		
 		DrawBoard(board);		
 
+		char win = CheckForWin(board);
+		if (win == 'o')
+		{
+			isMyTurn = true;
+			DrawWinMessage("Player 2 Wins!\n'Space to Restart'");
+		}
+		else if (win == 'x')
+		{
+			isMyTurn = true;
+			DrawWinMessage("Player 1 Wins!\n'Space to Restart'");
+		}
+		else if (win == 'd')
+		{
+			isMyTurn = true;
+			DrawWinMessage("Draw!\n'Space to Restart'");
+		}
+
+		if (win != ' ')
+		{
+			std::pair<int, int> reset = { 3, 3 };
+
+			if (IsKeyDown(KEY_SPACE))
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					for (int j = 0; j < 3; j++)
+					{
+						board[i][j] = ' ';
+						win = ' ';
+					}
+				}
+
+				reset = { 5, 5 };
+			}
+
+			client.SendAll((char*)&reset.first, sizeof(int));
+			client.SendAll((char*)&reset.second, sizeof(int));
+		}
+
 		if (!isMyTurn)
 		{
 			char buffer[sizeof(int) * 2];
@@ -81,7 +120,17 @@ void InitServer()
 				int recvX = *(int*)(buffer);
 				int recvY = *(int*)(buffer + sizeof(int));
 
-				if (recvX != 3 && recvY != 3 && board[recvX][recvY] == ' ')
+				if (recvX == 5 && recvY == 5)
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						for (int j = 0; j < 3; j++)
+						{
+							board[i][j] = ' ';
+						}
+					}
+				}
+				else if (recvX != 3 && recvY != 3 && board[recvX][recvY] == ' ')
 				{
 					board[recvX][recvY] = 'o';
 					isMyTurn = !isMyTurn;
@@ -101,10 +150,10 @@ void InitServer()
 					isMyTurn = !isMyTurn;
 				}
 			}
-			//if(input.first)
+
 			client.SendAll((char*)&input.first, sizeof(int));
 			client.SendAll((char*)&input.second, sizeof(int));
-		}		
+		}
 
 		DrawFPS(20, 20);
 		EndDrawing();
@@ -136,7 +185,42 @@ void InitClient()
 
 		DrawBoard(board);
 
-		
+		char win = CheckForWin(board);
+		if (win == 'o')
+		{
+			isMyTurn = false;
+			DrawWinMessage("Player 2 Wins!\n'Space to Restart'");
+		}
+		else if (win == 'x')
+		{
+			isMyTurn = false;
+			DrawWinMessage("Player 1 Wins!\n'Space to Restart'");
+		}
+		else if (win == 'd')
+		{
+			isMyTurn = false;
+			DrawWinMessage("Draw!\n'Space to Restart'");
+		}
+
+		/*if (win != ' ')
+		{
+			if (IsKeyDown(KEY_SPACE))
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					for (int j = 0; j < 3; j++)
+					{
+						board[i][j] = ' ';
+						win = ' ';
+					}
+				}
+
+				std::pair<int, int> reset = { 5, 5 };
+
+				client.Send((char*)&reset.first, sizeof(int));
+				client.Send((char*)&reset.second, sizeof(int));
+			}
+		}*/
 
 		if (isMyTurn)
 		{
@@ -168,9 +252,18 @@ void InitClient()
 				int recvX = *(int*)(buffer);
 				int recvY = *(int*)(buffer + sizeof(int));
 
-				if (recvX != 3 && recvY != 3 && board[recvX][recvY] == ' ')
+				if (recvX == 5 && recvY == 5)
 				{
-					std::cout << "dsajkhakdjsfh";
+					for (int i = 0; i < 3; i++)
+					{
+						for (int j = 0; j < 3; j++)
+						{
+							board[i][j] = ' ';
+						}
+					}
+				}
+				else if (recvX != 3 && recvY != 3 && board[recvX][recvY] == ' ')
+				{
 					board[recvX][recvY] = 'x';
 					isMyTurn = !isMyTurn;
 				}

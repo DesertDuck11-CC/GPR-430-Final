@@ -69,3 +69,17 @@ char CheckForWin(char board[3][3])
 
 	return 'd';
 }
+
+void DrawWinMessage(const char* message)
+{
+	int fontSize = 40;
+	Color textColor = GREEN;
+
+	int textWidth = MeasureText(message, fontSize);
+	int textHeight = fontSize;
+
+	int x = (GetScreenWidth() - textWidth) / 2;
+	int y = (GetScreenHeight() - textHeight) / 2;
+
+	DrawText(message, x, y, fontSize, textColor);
+}
