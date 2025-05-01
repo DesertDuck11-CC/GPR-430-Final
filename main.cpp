@@ -63,7 +63,7 @@ void InitServer()
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();
-		ClearBackground(BLACK);
+		ClearBackground(WHITE);
 
 		DrawBoard(board);
 
@@ -109,7 +109,7 @@ void InitClient()
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();
-		ClearBackground(BLACK);
+		ClearBackground(WHITE);
 
 		DrawBoard(board);
 
