@@ -74,8 +74,11 @@ void InitServer()
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMyTurn)
 		{
 			std::pair<int, int> input = ReadInput(GetMouseX(), GetMouseY());
-			board[input.first][input.second] = 'x';
-			isMyTurn = !isMyTurn;
+			if (board[input.first][input.second] == ' ')
+			{
+				board[input.first][input.second] = 'x';
+				isMyTurn = !isMyTurn;
+			}
 		}
 
 		DrawFPS(20, 20);
@@ -126,8 +129,12 @@ void InitClient()
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMyTurn)
 		{
 			std::pair<int, int> input = ReadInput(GetMouseX(), GetMouseY());
-			board[input.first][input.second] = 'o';
-			isMyTurn = !isMyTurn;
+			if (board[input.first][input.second] == ' ');
+			{
+				board[input.first][input.second] = 'o';
+				isMyTurn = !isMyTurn;
+			}
+				
 		}
 
 		DrawFPS(20, 20);

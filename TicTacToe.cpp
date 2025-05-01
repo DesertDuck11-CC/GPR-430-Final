@@ -31,7 +31,6 @@ void DrawBoard(char board[3][3])
 			else if(board[i][j] == 'o')
 				DrawTexture(oTexture, 13 + 200 * i, 13 + 200 * j, WHITE);
 		}
-		
 	}
 }
 
