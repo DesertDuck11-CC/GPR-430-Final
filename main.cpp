@@ -175,7 +175,7 @@ void InitClient()
 					isMyTurn = !isMyTurn;
 				}
 			}
-		}		
+		}
 
 		DrawFPS(20, 20);
 		EndDrawing();
