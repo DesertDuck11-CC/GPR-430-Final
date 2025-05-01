@@ -66,4 +66,19 @@ void InitServer()
 void InitClient()
 {
 	std::cout << "Client Initted\n";
+	Socket client(Socket::INET, Socket::STREAM);
+	client.Connect(Address(SERVER_ADDRESS, PORT));
+	client.SetNonBlockingMode(true);
+
+	std::string testMsg = "Hello server are you listening?";
+	client.Send(testMsg.c_str(), testMsg.size());
+	
+	std::string recvBuffer;
+	recvBuffer.resize(4096);
+	int bytesReceived = client.Recv(recvBuffer.data(), recvBuffer.length());
+	if (bytesReceived > 0)
+	{
+		recvBuffer.resize(4096);
+		client.Recv(recvBuffer.data(), bytesReceived);
+	}
 }
