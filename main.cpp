@@ -81,23 +81,20 @@ void InitServer()
 				int recvX = *(int*)(buffer);
 				int recvY = *(int*)(buffer + sizeof(int));
 
-				if (board[recvX][recvY] == ' ')
+				if (recvX != 3 && recvY != 3 && board[recvX][recvY] == ' ')
 				{
 					board[recvX][recvY] = 'o';
 					isMyTurn = !isMyTurn;
 				}
 			}
-
-			client.Send((char*)&input.first, sizeof(input.first));
-			client.Send((char*)&input.second, sizeof(input.second));
 		}
 		else if (isMyTurn)
 		{
-			std::pair<int, int> input = { 2, 2 };
+			std::pair<int, int> input = { 3, 3 };
 
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMyTurn)
 			{
-				std::pair<int, int> input = ReadInput(GetMouseX(), GetMouseY());
+				input = ReadInput(GetMouseX(), GetMouseY());
 				if (board[input.first][input.second] == ' ')
 				{
 					board[input.first][input.second] = 'x';
@@ -143,11 +140,13 @@ void InitClient()
 
 		if (isMyTurn)
 		{
-			std::pair<int, int> input = { 1, 1 };
+			std::pair<int, int> input = { 3, 3 };
 
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMyTurn)
 			{
 				input = ReadInput(GetMouseX(), GetMouseY());
+				std::cout << input.first;
+				std::cout << input.second;
 				if (board[input.first][input.second] == ' ')
 				{
 					board[input.first][input.second] = 'o';
@@ -169,8 +168,9 @@ void InitClient()
 				int recvX = *(int*)(buffer);
 				int recvY = *(int*)(buffer + sizeof(int));
 
-				if (board[recvX][recvY] == ' ')
+				if (recvX != 3 && recvY != 3 && board[recvX][recvY] == ' ')
 				{
+					std::cout << "dsajkhakdjsfh";
 					board[recvX][recvY] = 'x';
 					isMyTurn = !isMyTurn;
 				}
