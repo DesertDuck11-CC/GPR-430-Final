@@ -59,15 +59,30 @@ void InitServer()
 
 	while (!WindowShouldClose())
 	{
+		BeginDrawing();
+		ClearBackground(BLACK);
 
+		DrawFPS(20, 20);
+		EndDrawing();
 	}
+
+	CloseWindow();
 }
 
 void InitClient()
 {
 	std::cout << "Client Initted\n";
+
 	Socket client(Socket::INET, Socket::STREAM);
 	client.Connect(Address(SERVER_ADDRESS, PORT));
+
+	if (client.Connect(address) < 0)
+	{
+		std::cout << "Failed to connect!";
+		return;
+	}
+
+
 	client.SetNonBlockingMode(true);
 
 	std::string testMsg = "Hello server are you listening?";
@@ -81,4 +96,18 @@ void InitClient()
 		recvBuffer.resize(4096);
 		client.Recv(recvBuffer.data(), bytesReceived);
 	}
+	InitWindow(800, 600, "Player 2");
+	SetTargetFPS(60);
+
+	while (!WindowShouldClose())
+	{
+		BeginDrawing();
+		ClearBackground(BLACK);
+
+		DrawFPS(20, 20);
+		EndDrawing();
+	}
+
+	CloseWindow();
+	
 }
