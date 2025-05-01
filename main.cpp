@@ -11,6 +11,7 @@ const std::string SERVER_ADDRESS = "127.0.0.1";
 char board[3][3] = { {' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '} };
 
 bool isMyTurn;
+int first = 10, second = 10;
 
 void InitServer();
 void InitClient();
@@ -79,6 +80,9 @@ void InitServer()
 				board[input.first][input.second] = 'x';
 				isMyTurn = !isMyTurn;
 			}
+
+			client.Send((char*)&input.first, sizeof(input.first));
+			client.Send((char*)&input.second, sizeof(input.second));
 		}
 
 		DrawFPS(20, 20);
