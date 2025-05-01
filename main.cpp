@@ -1,11 +1,14 @@
 ﻿#include <socklib.h>
 #include <raylib.h>
+#include "TicTacToe.h"
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
 
 const int PORT = 1234;
 const std::string SERVER_ADDRESS = "127.0.0.1";
+
+char board[3][3] = { {' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '} };
 
 void InitServer();
 void InitClient();
@@ -54,13 +57,15 @@ void InitServer()
 	Socket client = server.Accept();
 	client.SetNonBlockingMode(true);
 
-	InitWindow(800, 600, "Player 1");
+	InitWindow(600, 600, "Player 1");
 	SetTargetFPS(60);
 
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();
 		ClearBackground(BLACK);
+
+		DrawBoard(board);
 
 		DrawFPS(20, 20);
 		EndDrawing();
@@ -74,7 +79,9 @@ void InitClient()
 	std::cout << "Client Initted\n";
 
 	Socket client(Socket::INET, Socket::STREAM);
-	client.Connect(Address(SERVER_ADDRESS, PORT));
+	Address address(SERVER_ADDRESS, PORT);
+
+	//client.Connect(Address(SERVER_ADDRESS, PORT));
 
 	if (client.Connect(address) < 0)
 	{
@@ -82,8 +89,7 @@ void InitClient()
 		return;
 	}
 
-
-	client.SetNonBlockingMode(true);
+	/*client.SetNonBlockingMode(true);
 
 	std::string testMsg = "Hello server are you listening?";
 	client.Send(testMsg.c_str(), testMsg.size());
@@ -95,14 +101,17 @@ void InitClient()
 	{
 		recvBuffer.resize(4096);
 		client.Recv(recvBuffer.data(), bytesReceived);
-	}
-	InitWindow(800, 600, "Player 2");
+	}*/
+
+	InitWindow(600, 600, "Player 2");
 	SetTargetFPS(60);
 
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();
 		ClearBackground(BLACK);
+
+		DrawBoard(board);
 
 		DrawFPS(20, 20);
 		EndDrawing();

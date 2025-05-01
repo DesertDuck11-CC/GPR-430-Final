@@ -3,7 +3,7 @@ project(networkFinal)
 
 set(CMAKE_CXX_STANDARD 26)
 
-add_executable(networkFinal main.cpp)
+add_executable(networkFinal main.cpp "TicTacToe.h" "TicTacToe.cpp")
 
 add_subdirectory(raylib)
 add_subdirectory(simplesock)
