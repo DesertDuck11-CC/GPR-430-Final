@@ -64,7 +64,7 @@ void InitServer()
 	{
 		BeginDrawing();
 		ClearBackground(WHITE);
-
+		
 		DrawBoard(board);
 
 		DrawFPS(20, 20);
