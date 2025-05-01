@@ -69,17 +69,41 @@ void InitServer()
 		BeginDrawing();
 		ClearBackground(WHITE);
 		
-		DrawBoard(board);
-		
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMyTurn)
+		DrawBoard(board);		
+
+		if (!isMyTurn)
 		{
-			std::pair<int, int> input = ReadInput(GetMouseX(), GetMouseY());
-			if (board[input.first][input.second] == ' ')
+			char buffer[sizeof(int) * 2];
+
+			if (client.Recv(buffer, sizeof(buffer)) > 0)
 			{
-				board[input.first][input.second] = 'x';
-				isMyTurn = !isMyTurn;
+				int recvX = *(int*)(buffer);
+				int recvY = *(int*)(buffer + sizeof(int));
+
+				if (board[recvX][recvY] == ' ')
+				{
+					board[recvX][recvY] = 'o';
+					isMyTurn = !isMyTurn;
+				}
 			}
 		}
+		else if (isMyTurn)
+		{
+			std::pair<int, int> input = { 2, 2 };
+
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMyTurn)
+			{
+				std::pair<int, int> input = ReadInput(GetMouseX(), GetMouseY());
+				if (board[input.first][input.second] == ' ')
+				{
+					board[input.first][input.second] = 'x';
+					isMyTurn = !isMyTurn;
+				}
+			}
+			//if(input.first)
+			client.SendAll((char*)&input.first, sizeof(int));
+			client.SendAll((char*)&input.second, sizeof(int));
+		}		
 
 		DrawFPS(20, 20);
 		EndDrawing();
@@ -95,27 +119,11 @@ void InitClient()
 	Socket client(Socket::INET, Socket::STREAM);
 	Address address(SERVER_ADDRESS, PORT);
 
-	//client.Connect(Address(SERVER_ADDRESS, PORT));
-
 	if (client.Connect(address) < 0)
 	{
 		std::cout << "Failed to connect!";
 		return;
 	}
-
-	/*client.SetNonBlockingMode(true);
-
-	std::string testMsg = "Hello server are you listening?";
-	client.Send(testMsg.c_str(), testMsg.size());
-	
-	std::string recvBuffer;
-	recvBuffer.resize(4096);
-	int bytesReceived = client.Recv(recvBuffer.data(), recvBuffer.length());
-	if (bytesReceived > 0)
-	{
-		recvBuffer.resize(4096);
-		client.Recv(recvBuffer.data(), bytesReceived);
-	}*/
 
 	InitWindow(600, 600, "Player 2");
 	SetTargetFPS(60);
@@ -126,33 +134,44 @@ void InitClient()
 		ClearBackground(WHITE);
 
 		DrawBoard(board);
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMyTurn)
+
+		
+
+		if (isMyTurn)
 		{
-			std::pair<int, int> input = ReadInput(GetMouseX(), GetMouseY());
-			if (board[input.first][input.second] == ' ');
+			std::pair<int, int> input = { 1, 1 };
+
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMyTurn)
 			{
-				board[input.first][input.second] = 'o';
-				isMyTurn = !isMyTurn;
+				input = ReadInput(GetMouseX(), GetMouseY());
+				if (board[input.first][input.second] == ' ')
+				{
+					board[input.first][input.second] = 'o';
+					isMyTurn = !isMyTurn;
+				}
 			}
-				
+
+
 			client.Send((char*)&input.first, sizeof(input.first));
 			client.Send((char*)&input.second, sizeof(input.second));
 		}
-
-		char buffer[sizeof(int) * 2];
-		int recvBytes = client.Recv(buffer, sizeof(buffer));
-
-		if (recvBytes > 0)
+		else if (!isMyTurn)
 		{
-			int recvX = *(int*)(buffer);
-			int recvY = *(int*)(buffer + sizeof(int));
+			char buffer[sizeof(int) * 2];
+			int recvBytes = client.Recv(buffer, sizeof(buffer));
 
-			if (board[recvX][recvY] == ' ')
+			if (recvBytes > 0)
 			{
-				board[recvX][recvY] = 'x';
-				isMyTurn = !isMyTurn;
+				int recvX = *(int*)(buffer);
+				int recvY = *(int*)(buffer + sizeof(int));
+
+				if (board[recvX][recvY] == ' ')
+				{
+					board[recvX][recvY] = 'x';
+					isMyTurn = !isMyTurn;
+				}
 			}
-		}
+		}		
 
 		DrawFPS(20, 20);
 		EndDrawing();
